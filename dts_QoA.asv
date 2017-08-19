@@ -3,14 +3,14 @@ close all;
 
 %% add dependencies
 addpath('./dependencies');
-dataPath = 'D:\Project\StereoSaliency\DATA\3DGaze\';
-rootPath = './3DGaze/';
+dataPath = 'D:\Project\QoA\QoA-of-synthesized-view\data\Saliency\';
+rootPath = 'D:\Project\QoA\QoA-of-synthesized-view\data\Saliency\Result\';
 %% input paths
-rgbPath =strcat(dataPath, 'RGB/');
+rgbPath =strcat(dataPath, 'Image/');
 depPath = strcat(dataPath,'Disparity\');
 
 %% output paths
-supPath =strcat(rootPath, 'superpixel/');
+supPath =strcat(rootPath, 'superpixel\');
 if ~exist(supPath,'file')
     mkdir(supPath);
 end
@@ -52,7 +52,7 @@ if ~exist(DepthPath,'file')
 end
 %% processing
 rgbFiles = dir(fullfile(rgbPath, '*.bmp'));
-depFiles = dir(fullfile(depPath, '*.mat'));
+depFiles = dir(fullfile(depPath, '*.bmp'));
 if isempty(rgbFiles)
     sprintf('the input image format is ".bmp"');
     rgbFiles = dir(fullfile(rgbPath, '*.jpg'));
@@ -85,7 +85,7 @@ for index = 1:length(rgbFiles)
     %% load depth data
     depName = depFiles(index).name;
  %   if strfind( depName(1:strfind(depName,'.')-1), imgNa me(1:strfind(imgName,'.')-1) )
-        dep = importdata(fullfile(depPath,depName));
+%         dep = importdata(fullfile(depPath,depName));
 %         dep = double(dep.cdata);
 %         depnorm = 1 - mat2gray(dep);
   %  else
@@ -94,7 +94,7 @@ for index = 1:length(rgbFiles)
 %         salMapPath = fullfile(DepthPath, [imgName(1:end-4), '.jpg']);
 %     imwrite(depnorm, salMapPath);
 %     depName = strcat(imgName(1:end-4),'.jpg');
-%     dep = imread(fullfile(depPath, depName));    
+    dep = imread(fullfile(depPath, depName));    
 
     mysize = size(dep);
     if numel(mysize)>2
@@ -156,7 +156,7 @@ for index = 1:length(rgbFiles)
 %     AngleDepth = atand(6.3/93)-atand(6.3./(93-meanDepth));
     DTNeural = DisparityTuningMT( AngleDepth );
     DTStatistical = sqrt(meanNormDepth);
-    DT = mat2gray(DTNeural+DTStatistical);
+    DT = mat2gray(DTStatistical);
     DisparityTuningSM = CreateImageFromSPs(DT, pixelList, height, width);
     salMapPath = fullfile(DisparityTuningPath, [imgName(1:end-4), '.jpg']);
     imwrite(DisparityTuningSM, salMapPath);
@@ -166,7 +166,7 @@ for index = 1:length(rgbFiles)
     salMapPath = fullfile(BPPath, [imgName(1:end-4), '.jpg']);
     imwrite(B, salMapPath);
     %% Saliency Combination
-    smap=[DepthContrast';DepthDiffusion';ColorDiffusion';wCtr';lbeSM';DT']';
+    smap=[DepthContrast';DepthDiffusion';ColorDiffusion';wCtr';lbeSM']';
     var = sqrt(sum((smap-repmat(mean(smap),spNum,1)).^2));
     var = exp(-mat2gray(var));
     d3map = smap*var';
@@ -186,13 +186,13 @@ for index = 1:length(rgbFiles)
 
     [row, col, dim] = size(SaliencyMap);
     center_bias_map = CenterBias_Model(SaliencyMap, 2);
-    SaliencyMap = mat2gray(0.7*SaliencyMap+0.3*center_bias_map);
+%     SaliencyMap = mat2gray(0.7*SaliencyMap+0.3*center_bias_map);
 %     SaliencyMap = SaliencyMap.*B;
 
     SaliencyMap = imresize(SaliencyMap, 1/16);    
     SaliencyMap = Norm_Operation(SaliencyMap);
-    f = fspecial('gaussian',[8 8],3); %高斯模板
-    SaliencyMap = imfilter(SaliencyMap,f,'same'); % 滤波
+%     f = fspecial('gaussian',[8 8],3); %高斯模板
+%     SaliencyMap = imfilter(SaliencyMap,f,'same'); % 滤波
     SaliencyMap = imresize(SaliencyMap, [row col]);  
     SaliencyMap = mat2gray(SaliencyMap);
     salMapPath = fullfile(salPath, [imgName(1:end-4), '.jpg']);

@@ -1,0 +1,19 @@
+clc;clear;
+close all;
+%% input paths
+synthesized_image_Path = '?D:\Project\QoA\QoA-of-synthesized-view\data\Saliency\Synthesized\';
+reference_image_Path = 'D:\Project\QoA\QoA-of-synthesized-view\data\Saliency\Image\';
+disparity_map_Path = 'D:\Project\QoA\QoA-of-synthesized-view\data\Saliency\Disparity\';
+rgbFiles = dir(fullfile(rgbPath, '*.bmp'));
+depFiles = dir(fullfile(depPath, '*.bmp'));
+if isempty(rgbFiles)
+    sprintf('the input image format is ".bmp"');
+    rgbFiles = dir(fullfile(rgbPath, '*.jpg'));
+    for i = 1:length(rgbFiles)
+        imgName = rgbFiles(i).name;
+        rgb = imread(fullfile(rgbPath, imgName));
+        savePath = fullfile(rgbPath, [imgName(1:end-4), '.bmp']);
+        imwrite(rgb,savePath,'bmp');        
+    end
+    rgbFiles = dir(fullfile(rgbPath, '*.bmp'));
+end
