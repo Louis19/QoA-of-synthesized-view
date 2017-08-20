@@ -84,7 +84,7 @@ for index = 1:length(rgbFiles)
     sup = ReadDAT([height, width],supName);
     %% load depth data
     depName = depFiles(index).name;
- %   if strfind( depName(1:strfind(depName,'.')-1), imgNa me(1:strfind(imgName,'.')-1) )
+ %   if strfind( depName(1:strfind(depName,'.')-1), imgNa m e(1:strfind(imgName,'.')-1) )
 %         dep = importdata(fullfile(depPath,depName));
 %         dep = double(dep.cdata);
 %         depnorm = 1 - mat2gray(dep);
