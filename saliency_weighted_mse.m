@@ -24,7 +24,7 @@ for index = 1:length(synthesized_image_Files)
     mse = (rgb-reference_image).^2;
 %     figure
 %     imagesc(mse)
-    % 求加权MSE，saliency作为权重
+    %求加权MSE，saliency作为权重
     wmse = mse.*sal_map;
 %     figure
 %     imagesc(wmse)
